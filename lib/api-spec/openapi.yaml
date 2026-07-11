@@ -3,20 +3,57 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: LedgerOS accounting system API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication and session
+  - name: dashboard
+    description: Accounting dashboard
+  - name: accounts
+    description: Chart of accounts
+  - name: ledger
+    description: General ledger and journal entries
+  - name: customers
+    description: Customers
+  - name: vendors
+    description: Vendors
+  - name: invoices
+    description: Invoices / accounts receivable
+  - name: bills
+    description: Bills / accounts payable
+  - name: expenses
+    description: Expenses
+  - name: payments
+    description: Payments and deposits
+  - name: banking
+    description: Bank accounts, transactions, reconciliation
+  - name: payroll
+    description: Payroll summaries
+  - name: close
+    description: Monthly close
+  - name: integrations
+    description: Integration inbox and mappings
+  - name: approvals
+    description: Approval queue
+  - name: audit
+    description: Audit log
+  - name: reports
+    description: Financial reports
+  - name: commandcenter
+    description: Command Center summary feed
+  - name: admin
+    description: Admin, users, roles, settings
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +61,1958 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Log in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Log out
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+  /auth/me:
+    get:
+      operationId: getSession
+      tags: [auth]
+      summary: Current session
+      responses:
+        "200":
+          description: Session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Accounting dashboard summary
+      responses:
+        "200":
+          description: Dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+
+  /accounts:
+    get:
+      operationId: listAccounts
+      tags: [accounts]
+      summary: List chart of accounts
+      responses:
+        "200":
+          description: Accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Account"
+    post:
+      operationId: createAccount
+      tags: [accounts]
+      summary: Create account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+  /accounts/{id}:
+    patch:
+      operationId: updateAccount
+      tags: [accounts]
+      summary: Update account
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List customers
+      responses:
+        "200":
+          description: Customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      summary: Create customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get customer
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateCustomer
+      tags: [customers]
+      summary: Update customer
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  /vendors:
+    get:
+      operationId: listVendors
+      tags: [vendors]
+      summary: List vendors
+      responses:
+        "200":
+          description: Vendors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Vendor"
+    post:
+      operationId: createVendor
+      tags: [vendors]
+      summary: Create vendor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VendorInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vendor"
+  /vendors/{id}:
+    patch:
+      operationId: updateVendor
+      tags: [vendors]
+      summary: Update vendor
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VendorUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vendor"
+
+  /invoices:
+    get:
+      operationId: listInvoices
+      tags: [invoices]
+      summary: List invoices
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Invoices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invoice"
+    post:
+      operationId: createInvoice
+      tags: [invoices]
+      summary: Create invoice draft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+  /invoices/{id}:
+    get:
+      operationId: getInvoice
+      tags: [invoices]
+      summary: Get invoice
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Invoice
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /invoices/{id}/transition:
+    post:
+      operationId: transitionInvoice
+      tags: [invoices]
+      summary: Move invoice through its workflow (submit, approve, reject, send)
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransitionInput"
+      responses:
+        "200":
+          description: Invoice
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "400":
+          description: Invalid transition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bills:
+    get:
+      operationId: listBills
+      tags: [bills]
+      summary: List bills
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Bills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Bill"
+    post:
+      operationId: createBill
+      tags: [bills]
+      summary: Create bill draft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bill"
+  /bills/{id}:
+    get:
+      operationId: getBill
+      tags: [bills]
+      summary: Get bill
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Bill
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bill"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /bills/{id}/transition:
+    post:
+      operationId: transitionBill
+      tags: [bills]
+      summary: Move bill through its workflow (submit, approve, reject, pay)
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransitionInput"
+      responses:
+        "200":
+          description: Bill
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bill"
+        "400":
+          description: Invalid transition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /expenses:
+    get:
+      operationId: listExpenses
+      tags: [expenses]
+      summary: List expenses
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: mine
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Expenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Expense"
+    post:
+      operationId: createExpense
+      tags: [expenses]
+      summary: Submit expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+  /expenses/{id}/transition:
+    post:
+      operationId: transitionExpense
+      tags: [expenses]
+      summary: Review expense (submit, approve, reject, request-receipt, non-reimbursable)
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransitionInput"
+      responses:
+        "200":
+          description: Expense
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+        "400":
+          description: Invalid transition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /payments:
+    get:
+      operationId: listPayments
+      tags: [payments]
+      summary: List payments
+      responses:
+        "200":
+          description: Payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment"
+    post:
+      operationId: createPayment
+      tags: [payments]
+      summary: Record a payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bank-accounts:
+    get:
+      operationId: listBankAccounts
+      tags: [banking]
+      summary: List bank accounts
+      responses:
+        "200":
+          description: Bank accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BankAccount"
+    post:
+      operationId: createBankAccount
+      tags: [banking]
+      summary: Add bank account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BankAccountInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankAccount"
+  /bank-transactions:
+    get:
+      operationId: listBankTransactions
+      tags: [banking]
+      summary: List bank transactions
+      parameters:
+        - name: bankAccountId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Bank transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BankTransaction"
+  /bank-transactions/import:
+    post:
+      operationId: importBankTransactions
+      tags: [banking]
+      summary: Import bank transactions (CSV rows or test data)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BankImportInput"
+      responses:
+        "201":
+          description: Imported
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BankTransaction"
+  /bank-transactions/{id}/review:
+    post:
+      operationId: reviewBankTransaction
+      tags: [banking]
+      summary: Categorize, match, split, mark transfer, or send to review
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BankReviewInput"
+      responses:
+        "200":
+          description: Bank transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankTransaction"
+
+  /reconciliations:
+    get:
+      operationId: listReconciliations
+      tags: [banking]
+      summary: List reconciliations
+      responses:
+        "200":
+          description: Reconciliations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reconciliation"
+    post:
+      operationId: createReconciliation
+      tags: [banking]
+      summary: Start a reconciliation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReconciliationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reconciliation"
+  /reconciliations/{id}/transition:
+    post:
+      operationId: transitionReconciliation
+      tags: [banking]
+      summary: Submit or approve a reconciliation
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransitionInput"
+      responses:
+        "200":
+          description: Reconciliation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reconciliation"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /journal-entries:
+    get:
+      operationId: listJournalEntries
+      tags: [ledger]
+      summary: List journal entries
+      responses:
+        "200":
+          description: Journal entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JournalEntry"
+    post:
+      operationId: createJournalEntry
+      tags: [ledger]
+      summary: Create a journal entry (must balance)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JournalEntryInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JournalEntry"
+        "400":
+          description: Unbalanced or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /journal-entries/{id}:
+    get:
+      operationId: getJournalEntry
+      tags: [ledger]
+      summary: Get journal entry
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Journal entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JournalEntry"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /journal-entries/{id}/transition:
+    post:
+      operationId: transitionJournalEntry
+      tags: [ledger]
+      summary: Submit, approve/post, or reverse a journal entry
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransitionInput"
+      responses:
+        "200":
+          description: Journal entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JournalEntry"
+        "400":
+          description: Invalid transition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /ledger:
+    get:
+      operationId: getGeneralLedger
+      tags: [ledger]
+      summary: General ledger lines
+      parameters:
+        - name: accountId
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Ledger lines
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LedgerLine"
+
+  /payroll:
+    get:
+      operationId: listPayroll
+      tags: [payroll]
+      summary: List payroll summaries
+      responses:
+        "200":
+          description: Payroll summaries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PayrollSummary"
+    post:
+      operationId: createPayroll
+      tags: [payroll]
+      summary: Add payroll summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayrollInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayrollSummary"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /payroll/{id}/transition:
+    post:
+      operationId: transitionPayroll
+      tags: [payroll]
+      summary: Submit or approve payroll summary
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransitionInput"
+      responses:
+        "200":
+          description: Payroll summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayrollSummary"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /monthly-close:
+    get:
+      operationId: listMonthlyClose
+      tags: [close]
+      summary: List monthly close periods
+      responses:
+        "200":
+          description: Close periods
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlyClose"
+    post:
+      operationId: createMonthlyClose
+      tags: [close]
+      summary: Create a monthly close period
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MonthlyCloseInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyClose"
+  /monthly-close/{id}/checklist:
+    post:
+      operationId: updateCloseChecklist
+      tags: [close]
+      summary: Toggle a checklist item
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChecklistUpdate"
+      responses:
+        "200":
+          description: Close period
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyClose"
+  /monthly-close/{id}/lock:
+    post:
+      operationId: lockMonthlyClose
+      tags: [close]
+      summary: Lock the period (approval required)
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Close period
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyClose"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /integration-events:
+    get:
+      operationId: listIntegrationEvents
+      tags: [integrations]
+      summary: List integration inbox events
+      responses:
+        "200":
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IntegrationEvent"
+    post:
+      operationId: createIntegrationEvent
+      tags: [integrations]
+      summary: Create a draft integration event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IntegrationEventInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegrationEvent"
+  /integration-events/{id}/action:
+    post:
+      operationId: actionIntegrationEvent
+      tags: [integrations]
+      summary: Convert to draft record or dismiss (never silent-post)
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransitionInput"
+      responses:
+        "200":
+          description: Event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegrationEvent"
+  /product-mappings:
+    get:
+      operationId: listProductMappings
+      tags: [integrations]
+      summary: List product/app mappings
+      responses:
+        "200":
+          description: Mappings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductMapping"
+    post:
+      operationId: createProductMapping
+      tags: [integrations]
+      summary: Create product/app mapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductMappingInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductMapping"
+
+  /approvals:
+    get:
+      operationId: listApprovals
+      tags: [approvals]
+      summary: Pending approvals across all record types
+      responses:
+        "200":
+          description: Approvals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApprovalItem"
+
+  /audit-logs:
+    get:
+      operationId: listAuditLogs
+      tags: [audit]
+      summary: Audit log
+      parameters:
+        - name: recordType
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Audit logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditLog"
+
+  /reports/{type}:
+    get:
+      operationId: getReport
+      tags: [reports]
+      summary: Get a financial report
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+
+  /command-center/summary:
+    get:
+      operationId: getCommandCenterSummary
+      tags: [commandcenter]
+      summary: Safe overview feed for Command Center
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommandCenterSummary"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [admin]
+      summary: List users
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      operationId: createUser
+      tags: [admin]
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /users/{id}:
+    patch:
+      operationId: updateUser
+      tags: [admin]
+      summary: Update user role/status
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /roles:
+    get:
+      operationId: listRoles
+      tags: [admin]
+      summary: List roles and permissions
+      responses:
+        "200":
+          description: Roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [admin]
+      summary: Company settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+    patch:
+      operationId: updateSettings
+      tags: [admin]
+      summary: Update company settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingsUpdate"
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /production-readiness:
+    get:
+      operationId: getProductionReadiness
+      tags: [admin]
+      summary: Production readiness gates and rollout stage
+      responses:
+        "200":
+          description: Readiness
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductionReadiness"
+
 components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
-
+    OkResponse:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+    LoginInput:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+    User:
+      type: object
+      required: [id, name, username, role, active, mfaEnabled]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        username: { type: string }
+        email: { type: ["string", "null"] }
+        role: { type: string }
+        active: { type: boolean }
+        mfaEnabled: { type: boolean }
+    Session:
+      type: object
+      required: [authenticated]
+      properties:
+        authenticated: { type: boolean }
+        user:
+          oneOf:
+            - $ref: "#/components/schemas/User"
+            - type: "null"
+        permissions:
+          type: array
+          items: { type: string }
+    UserInput:
+      type: object
+      required: [name, username, password, role]
+      properties:
+        name: { type: string, minLength: 1 }
+        username: { type: string, minLength: 1 }
+        email: { type: string }
+        password: { type: string, minLength: 4 }
+        role: { type: string, minLength: 1 }
+    UserUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        role: { type: string }
+        active: { type: boolean }
+        mfaEnabled: { type: boolean }
+    Role:
+      type: object
+      required: [key, name, permissions]
+      properties:
+        key: { type: string }
+        name: { type: string }
+        description: { type: string }
+        permissions:
+          type: array
+          items: { type: string }
+    TransitionInput:
+      type: object
+      required: [action]
+      properties:
+        action: { type: string, minLength: 1 }
+        note: { type: string }
+        matchBankTransactionId: { type: ["integer", "null"] }
+    Account:
+      type: object
+      required: [id, code, name, type, isActive, balance]
+      properties:
+        id: { type: integer }
+        code: { type: string }
+        name: { type: string }
+        type: { type: string }
+        subtype: { type: ["string", "null"] }
+        description: { type: ["string", "null"] }
+        isActive: { type: boolean }
+        isSensitive: { type: boolean }
+        balance: { type: number }
+    AccountInput:
+      type: object
+      required: [code, name, type]
+      properties:
+        code: { type: string, minLength: 1 }
+        name: { type: string, minLength: 1 }
+        type: { type: string, minLength: 1 }
+        subtype: { type: string }
+        description: { type: string }
+        isSensitive: { type: boolean }
+    AccountUpdate:
+      type: object
+      properties:
+        code: { type: string }
+        name: { type: string }
+        type: { type: string }
+        subtype: { type: string }
+        description: { type: string }
+        isActive: { type: boolean }
+        isSensitive: { type: boolean }
+    Customer:
+      type: object
+      required: [id, name, balance]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: ["string", "null"] }
+        phone: { type: ["string", "null"] }
+        company: { type: ["string", "null"] }
+        sourceApp: { type: ["string", "null"] }
+        externalId: { type: ["string", "null"] }
+        notes: { type: ["string", "null"] }
+        balance: { type: number }
+        isTestData: { type: boolean }
+    CustomerInput:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1 }
+        email: { type: string }
+        phone: { type: string }
+        company: { type: string }
+        sourceApp: { type: string }
+        externalId: { type: string }
+        notes: { type: string }
+    CustomerUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        company: { type: string }
+        sourceApp: { type: string }
+        notes: { type: string }
+    Vendor:
+      type: object
+      required: [id, name, balance]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: ["string", "null"] }
+        phone: { type: ["string", "null"] }
+        category: { type: ["string", "null"] }
+        isSensitive: { type: boolean }
+        notes: { type: ["string", "null"] }
+        balance: { type: number }
+        isTestData: { type: boolean }
+    VendorInput:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1 }
+        email: { type: string }
+        phone: { type: string }
+        category: { type: string }
+        isSensitive: { type: boolean }
+        notes: { type: string }
+    VendorUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        category: { type: string }
+        isSensitive: { type: boolean }
+        notes: { type: string }
+    InvoiceLine:
+      type: object
+      required: [description, quantity, unitPrice, amount]
+      properties:
+        id: { type: ["integer", "null"] }
+        description: { type: string }
+        quantity: { type: number }
+        unitPrice: { type: number }
+        amount: { type: number }
+        accountId: { type: ["integer", "null"] }
+    Invoice:
+      type: object
+      required: [id, number, customerId, status, issueDate, total]
+      properties:
+        id: { type: integer }
+        number: { type: string }
+        customerId: { type: integer }
+        customerName: { type: ["string", "null"] }
+        status: { type: string }
+        sourceApp: { type: ["string", "null"] }
+        issueDate: { type: string }
+        dueDate: { type: ["string", "null"] }
+        terms: { type: ["string", "null"] }
+        memo: { type: ["string", "null"] }
+        subtotal: { type: number }
+        total: { type: number }
+        amountPaid: { type: number }
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvoiceLine"
+        isTestData: { type: boolean }
+        createdAt: { type: string }
+    InvoiceInput:
+      type: object
+      required: [customerId, issueDate, lines]
+      properties:
+        customerId: { type: integer }
+        sourceApp: { type: string }
+        issueDate: { type: string }
+        dueDate: { type: string }
+        terms: { type: string }
+        memo: { type: string }
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvoiceLine"
+    Bill:
+      type: object
+      required: [id, number, vendorId, status, billDate, total]
+      properties:
+        id: { type: integer }
+        number: { type: string }
+        vendorId: { type: integer }
+        vendorName: { type: ["string", "null"] }
+        status: { type: string }
+        billDate: { type: string }
+        dueDate: { type: ["string", "null"] }
+        category: { type: ["string", "null"] }
+        clientProject: { type: ["string", "null"] }
+        memo: { type: ["string", "null"] }
+        total: { type: number }
+        amountPaid: { type: number }
+        isSensitive: { type: boolean }
+        possibleDuplicate: { type: boolean }
+        isTestData: { type: boolean }
+        createdAt: { type: string }
+    BillInput:
+      type: object
+      required: [vendorId, billDate, total]
+      properties:
+        vendorId: { type: integer }
+        billDate: { type: string }
+        dueDate: { type: string }
+        category: { type: string }
+        clientProject: { type: string }
+        memo: { type: string }
+        total: { type: number }
+        isSensitive: { type: boolean }
+    Expense:
+      type: object
+      required: [id, description, amount, status, expenseDate]
+      properties:
+        id: { type: integer }
+        description: { type: string }
+        vendorName: { type: ["string", "null"] }
+        amount: { type: number }
+        category: { type: ["string", "null"] }
+        clientProject: { type: ["string", "null"] }
+        sourceApp: { type: ["string", "null"] }
+        status: { type: string }
+        expenseDate: { type: string }
+        hasReceipt: { type: boolean }
+        reimbursable: { type: boolean }
+        submittedById: { type: ["integer", "null"] }
+        submittedByName: { type: ["string", "null"] }
+        isTestData: { type: boolean }
+        createdAt: { type: string }
+    ExpenseInput:
+      type: object
+      required: [description, amount, expenseDate]
+      properties:
+        description: { type: string, minLength: 1 }
+        vendorName: { type: string }
+        amount: { type: number }
+        category: { type: string }
+        clientProject: { type: string }
+        sourceApp: { type: string }
+        expenseDate: { type: string }
+        hasReceipt: { type: boolean }
+    Payment:
+      type: object
+      required: [id, amount, paymentDate, method, direction, status]
+      properties:
+        id: { type: integer }
+        invoiceId: { type: ["integer", "null"] }
+        invoiceNumber: { type: ["string", "null"] }
+        customerId: { type: ["integer", "null"] }
+        customerName: { type: ["string", "null"] }
+        amount: { type: number }
+        paymentDate: { type: string }
+        method: { type: string }
+        direction: { type: string }
+        reference: { type: ["string", "null"] }
+        depositAccountId: { type: ["integer", "null"] }
+        matchedBankTransactionId: { type: ["integer", "null"] }
+        status: { type: string }
+        isTestData: { type: boolean }
+    PaymentInput:
+      type: object
+      required: [amount, paymentDate, method]
+      properties:
+        invoiceId: { type: integer }
+        customerId: { type: integer }
+        amount: { type: number }
+        paymentDate: { type: string }
+        method: { type: string }
+        reference: { type: string }
+        depositAccountId: { type: integer }
+        matchedBankTransactionId: { type: integer }
+    BankAccount:
+      type: object
+      required: [id, label, institution, maskedNumber, connectionMethod, balance]
+      properties:
+        id: { type: integer }
+        label: { type: string }
+        institution: { type: string }
+        maskedNumber: { type: string }
+        connectionMethod: { type: string }
+        accountType: { type: ["string", "null"] }
+        balance: { type: number }
+        isTestData: { type: boolean }
+    BankAccountInput:
+      type: object
+      required: [label, institution, maskedNumber, connectionMethod]
+      properties:
+        label: { type: string, minLength: 1 }
+        institution: { type: string, minLength: 1 }
+        maskedNumber: { type: string, minLength: 1 }
+        connectionMethod: { type: string, minLength: 1 }
+        accountType: { type: string }
+    BankTransaction:
+      type: object
+      required: [id, bankAccountId, txnDate, description, amount, status]
+      properties:
+        id: { type: integer }
+        bankAccountId: { type: integer }
+        txnDate: { type: string }
+        description: { type: string }
+        amount: { type: number }
+        status: { type: string }
+        category: { type: ["string", "null"] }
+        matchedType: { type: ["string", "null"] }
+        matchedId: { type: ["integer", "null"] }
+        suggestedCategory: { type: ["string", "null"] }
+        confidence: { type: ["number", "null"] }
+        reconciled: { type: boolean }
+        isTestData: { type: boolean }
+    BankImportRow:
+      type: object
+      required: [txnDate, description, amount]
+      properties:
+        txnDate: { type: string }
+        description: { type: string }
+        amount: { type: number }
+    BankImportInput:
+      type: object
+      required: [bankAccountId]
+      properties:
+        bankAccountId: { type: integer }
+        useTestData: { type: boolean }
+        rows:
+          type: array
+          items:
+            $ref: "#/components/schemas/BankImportRow"
+    BankReviewInput:
+      type: object
+      required: [action]
+      properties:
+        action: { type: string, minLength: 1 }
+        category: { type: string }
+        matchedType: { type: string }
+        matchedId: { type: integer }
+    Reconciliation:
+      type: object
+      required: [id, bankAccountId, periodStart, periodEnd, startingBalance, endingBalance, clearedTotal, variance, status]
+      properties:
+        id: { type: integer }
+        bankAccountId: { type: integer }
+        bankAccountLabel: { type: ["string", "null"] }
+        periodStart: { type: string }
+        periodEnd: { type: string }
+        startingBalance: { type: number }
+        endingBalance: { type: number }
+        clearedTotal: { type: number }
+        variance: { type: number }
+        status: { type: string }
+        clearedTransactionIds:
+          type: array
+          items: { type: integer }
+        isTestData: { type: boolean }
+    ReconciliationInput:
+      type: object
+      required: [bankAccountId, periodStart, periodEnd, startingBalance, endingBalance]
+      properties:
+        bankAccountId: { type: integer }
+        periodStart: { type: string }
+        periodEnd: { type: string }
+        startingBalance: { type: number }
+        endingBalance: { type: number }
+        clearedTransactionIds:
+          type: array
+          items: { type: integer }
+    JournalLine:
+      type: object
+      required: [accountId, debit, credit]
+      properties:
+        id: { type: ["integer", "null"] }
+        accountId: { type: integer }
+        accountName: { type: ["string", "null"] }
+        debit: { type: number }
+        credit: { type: number }
+        memo: { type: ["string", "null"] }
+    JournalEntry:
+      type: object
+      required: [id, entryDate, memo, status, totalDebit, totalCredit]
+      properties:
+        id: { type: integer }
+        reference: { type: ["string", "null"] }
+        entryDate: { type: string }
+        memo: { type: string }
+        reason: { type: ["string", "null"] }
+        status: { type: string }
+        source: { type: ["string", "null"] }
+        totalDebit: { type: number }
+        totalCredit: { type: number }
+        reversedById: { type: ["integer", "null"] }
+        reversalOfId: { type: ["integer", "null"] }
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/JournalLine"
+        isTestData: { type: boolean }
+        createdAt: { type: string }
+    JournalEntryInput:
+      type: object
+      required: [entryDate, memo, lines]
+      properties:
+        entryDate: { type: string }
+        memo: { type: string, minLength: 1 }
+        reason: { type: string }
+        lines:
+          type: array
+          items:
+            $ref: "#/components/schemas/JournalLine"
+    LedgerLine:
+      type: object
+      required: [id, entryDate, accountId, accountName, debit, credit, memo]
+      properties:
+        id: { type: integer }
+        journalEntryId: { type: integer }
+        entryDate: { type: string }
+        accountId: { type: integer }
+        accountCode: { type: ["string", "null"] }
+        accountName: { type: string }
+        debit: { type: number }
+        credit: { type: number }
+        memo: { type: ["string", "null"] }
+        reference: { type: ["string", "null"] }
+    PayrollSummary:
+      type: object
+      required: [id, periodStart, periodEnd, payDate, grossPay, status]
+      properties:
+        id: { type: integer }
+        periodStart: { type: string }
+        periodEnd: { type: string }
+        payDate: { type: string }
+        grossPay: { type: number }
+        taxes: { type: number }
+        netPay: { type: number }
+        employerTaxes: { type: number }
+        employeeCount: { type: ["integer", "null"] }
+        source: { type: ["string", "null"] }
+        status: { type: string }
+        flagged: { type: boolean }
+        flagReason: { type: ["string", "null"] }
+        isTestData: { type: boolean }
+    PayrollInput:
+      type: object
+      required: [periodStart, periodEnd, payDate, grossPay]
+      properties:
+        periodStart: { type: string }
+        periodEnd: { type: string }
+        payDate: { type: string }
+        grossPay: { type: number }
+        taxes: { type: number }
+        netPay: { type: number }
+        employerTaxes: { type: number }
+        employeeCount: { type: integer }
+        source: { type: string }
+    ChecklistItem:
+      type: object
+      required: [key, label, done]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        done: { type: boolean }
+    MonthlyClose:
+      type: object
+      required: [id, periodLabel, status, checklist]
+      properties:
+        id: { type: integer }
+        periodLabel: { type: string }
+        periodStart: { type: string }
+        periodEnd: { type: string }
+        status: { type: string }
+        lockedAt: { type: ["string", "null"] }
+        lockedById: { type: ["integer", "null"] }
+        checklist:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChecklistItem"
+        isTestData: { type: boolean }
+    MonthlyCloseInput:
+      type: object
+      required: [periodLabel, periodStart, periodEnd]
+      properties:
+        periodLabel: { type: string, minLength: 1 }
+        periodStart: { type: string }
+        periodEnd: { type: string }
+    ChecklistUpdate:
+      type: object
+      required: [key, done]
+      properties:
+        key: { type: string }
+        done: { type: boolean }
+    IntegrationEvent:
+      type: object
+      required: [id, sourceApp, eventType, status, receivedAt]
+      properties:
+        id: { type: integer }
+        sourceApp: { type: string }
+        eventType: { type: string }
+        status: { type: string }
+        summary: { type: ["string", "null"] }
+        amount: { type: ["number", "null"] }
+        payload: { type: ["string", "null"] }
+        createdRecordType: { type: ["string", "null"] }
+        createdRecordId: { type: ["integer", "null"] }
+        receivedAt: { type: string }
+        isTestData: { type: boolean }
+    IntegrationEventInput:
+      type: object
+      required: [sourceApp, eventType]
+      properties:
+        sourceApp: { type: string, minLength: 1 }
+        eventType: { type: string, minLength: 1 }
+        summary: { type: string }
+        amount: { type: number }
+        payload: { type: string }
+    ProductMapping:
+      type: object
+      required: [id, sourceApp, eventType, action]
+      properties:
+        id: { type: integer }
+        sourceApp: { type: string }
+        eventType: { type: string }
+        action: { type: string }
+        revenueAccountId: { type: ["integer", "null"] }
+        costAccountId: { type: ["integer", "null"] }
+        autoDraft: { type: boolean }
+        notes: { type: ["string", "null"] }
+    ProductMappingInput:
+      type: object
+      required: [sourceApp, eventType, action]
+      properties:
+        sourceApp: { type: string, minLength: 1 }
+        eventType: { type: string, minLength: 1 }
+        action: { type: string, minLength: 1 }
+        revenueAccountId: { type: integer }
+        costAccountId: { type: integer }
+        autoDraft: { type: boolean }
+        notes: { type: string }
+    ApprovalItem:
+      type: object
+      required: [recordType, recordId, title, amount, submittedAt]
+      properties:
+        recordType: { type: string }
+        recordId: { type: integer }
+        title: { type: string }
+        amount: { type: number }
+        status: { type: string }
+        submittedBy: { type: ["string", "null"] }
+        submittedAt: { type: string }
+    AuditLog:
+      type: object
+      required: [id, action, recordType, timestamp]
+      properties:
+        id: { type: integer }
+        userId: { type: ["integer", "null"] }
+        userName: { type: ["string", "null"] }
+        action: { type: string }
+        recordType: { type: string }
+        recordId: { type: ["integer", "null"] }
+        before: { type: ["string", "null"] }
+        after: { type: ["string", "null"] }
+        note: { type: ["string", "null"] }
+        ipAddress: { type: ["string", "null"] }
+        timestamp: { type: string }
+    ReportRow:
+      type: object
+      required: [label, value]
+      properties:
+        label: { type: string }
+        value: { type: number }
+        group: { type: ["string", "null"] }
+        detail: { type: ["string", "null"] }
+    Report:
+      type: object
+      required: [type, title, rows]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        generatedAt: { type: string }
+        columns:
+          type: array
+          items: { type: string }
+        rows:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportRow"
+        totals:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportRow"
+    Dashboard:
+      type: object
+      required: [cashPosition]
+      properties:
+        cashPosition: { type: number }
+        bankBalances:
+          type: array
+          items:
+            $ref: "#/components/schemas/BankAccount"
+        pendingBankReview: { type: integer }
+        arTotal: { type: number }
+        apDueSoon: { type: number }
+        overdueInvoicesCount: { type: integer }
+        overdueInvoicesAmount: { type: number }
+        pendingApprovals: { type: integer }
+        reconciliationHealth: { type: string }
+        monthlyCloseStatus: { type: string }
+        expenseReviewQueue: { type: integer }
+        integrationErrors: { type: integer }
+        payrollAlerts: { type: integer }
+        arAging:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportRow"
+        productRevenue:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportRow"
+        clientProfitability:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportRow"
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditLog"
+    CommandCenterSummary:
+      type: object
+      required: [cashPosition, generatedAt]
+      properties:
+        cashPosition: { type: number }
+        arAgingSummary: { type: number }
+        apDueSoon: { type: number }
+        overdueInvoicesCount: { type: integer }
+        overdueInvoicesAmount: { type: number }
+        pendingApprovals: { type: integer }
+        reconciliationHealth: { type: string }
+        monthlyCloseStatus: { type: string }
+        integrationErrors: { type: integer }
+        productRevenue:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportRow"
+        clientProfitability:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportRow"
+        generatedAt: { type: string }
+    Settings:
+      type: object
+      required: [companyName]
+      properties:
+        companyName: { type: string }
+        legalName: { type: ["string", "null"] }
+        fiscalYearStart: { type: ["string", "null"] }
+        baseCurrency: { type: string }
+        approvalThreshold: { type: number }
+        highValueThreshold: { type: number }
+        rolloutStage: { type: string }
+    SettingsUpdate:
+      type: object
+      properties:
+        companyName: { type: string }
+        legalName: { type: string }
+        fiscalYearStart: { type: string }
+        baseCurrency: { type: string }
+        approvalThreshold: { type: number }
+        highValueThreshold: { type: number }
+        rolloutStage: { type: string }
+    ReadinessGate:
+      type: object
+      required: [key, name, status]
+      properties:
+        key: { type: string }
+        name: { type: string }
+        status: { type: string }
+        detail: { type: ["string", "null"] }
+    ProductionReadiness:
+      type: object
+      required: [rolloutStage, gates, stages]
+      properties:
+        rolloutStage: { type: string }
+        gates:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReadinessGate"
+        stages:
+          type: array
+          items: { type: string }

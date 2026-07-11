@@ -1,0 +1,566 @@
+Build a fully functioning production-intent custom accounting system for CCA called LedgerOS.
+
+LedgerOS is not a demo, mockup, fake dashboard, static prototype, or UI-only app. The goal is to build a real, working accounting application that can eventually replace Zoho Books after proper migration, reconciliation, security review, and approval.
+
+LedgerOS must be highly intuitive, customizable, role-aware, audit-friendly, and designed to integrate with the company’s broader app ecosystem.
+
+Company context:
+- Current accounting platform is Zoho Books.
+- Founder direction is to replace Zoho Books with LedgerOS.
+- Bank source is Navy Federal Credit Union.
+- LedgerOS must be allowed to create accounting records/actions, not just display reports.
+- Christin is the primary day-to-day accounting operator.
+- Rose and Christin are the accounting approvers.
+- Command Center should receive analytics and overviews only.
+- Command Center must not become the accounting workspace or full ledger.
+- Sensitive/private boundaries are not fully defined yet, so default to restrictive access.
+- Existing related systems include Command Center, Client Portal / Online Services, ComplianceConnect, Zoho CRM, Zoho Forms, Zoho Billing, RUN ADP, Tara OS, Sales Intelligence OS, Guided Sales, Business Services Hub, QualifierConnect, Bid Intelligence OS, Facility Intelligence, HealthCast, and TrustScore.
+
+Important product rule:
+Build LedgerOS as a real accounting system with persistent data, real workflows, role-based permissions, approval gates, audit logging, and integration-ready architecture. Do not use fake success states. Do not show “uploaded,” “sent,” “synced,” “posted,” or “paid” unless the action actually happened in the app’s backend.
+
+Technology expectations:
+- Use a modern full-stack app architecture.
+- Use persistent database storage.
+- Use server-side APIs for all accounting actions.
+- Use server-side validation for accounting rules.
+- Use role-based access control.
+- Use audit logging.
+- Use clean, maintainable code.
+- Use seed data only for development/testing and label it clearly as test data.
+- Include a clear path to connect real integrations later.
+- Do not hardcode secrets.
+- Use environment variables for secrets and connection settings.
+- Build with production intent, even if some external integrations start as import/export workflows.
+
+Core screens:
+1. Login / Auth
+2. Main Accounting Dashboard
+3. Banking
+4. Bank Transaction Review
+5. Reconciliation
+6. Chart of Accounts
+7. General Ledger
+8. Journal Entries
+9. Customers
+10. Vendors
+11. Invoices / Accounts Receivable
+12. Payments / Deposits
+13. Bills / Accounts Payable
+14. Expenses
+15. Payroll Summary
+16. Reports
+17. Monthly Close
+18. Integration Inbox
+19. Command Center Summary Feed
+20. Admin Settings
+21. Users & Roles
+22. Audit Log
+23. Data Import / Migration
+24. App/Product Mapping
+25. Approval Queue
+
+Primary navigation:
+Use a clean left sidebar with:
+- Dashboard
+- Banking
+- Ledger
+- Invoices
+- Payments
+- Bills
+- Expenses
+- Payroll
+- Reports
+- Monthly Close
+- Integrations
+- Admin
+
+Top bar:
+- Company selector
+- Global search
+- Create button
+- Review queue shortcut
+- Notifications
+- User/profile menu
+
+Design requirements:
+- Build the usable app as the first screen after login.
+- Do not create a marketing landing page.
+- Make it feel like a serious accounting cockpit: clean, calm, dense, professional, fast to scan.
+- Avoid decorative gradients, oversized hero sections, and marketing-style cards.
+- Use restrained colors, clear hierarchy, and practical controls.
+- Use tables for accounting records.
+- Use filters, tabs, search, saved views, and status chips.
+- Use drawer/detail panels for record review.
+- Use modals only for focused actions.
+- Use icons for common actions where appropriate.
+- Keep all text readable on desktop and mobile.
+- Make the interface responsive.
+- Do not let tables overflow awkwardly on small screens; provide horizontal scroll or responsive row cards.
+- Every empty state must tell the user what action to take next.
+- Every error state must explain what failed and what can be done.
+
+Roles:
+Create these roles:
+1. Owner
+2. Accounting Lead
+3. Systems Reviewer
+4. Accountant / Tax Advisor
+5. Team Member
+6. Integration Service
+
+Default permissions:
+Owner:
+- Full visibility
+- Full approval rights
+- Sensitive financial settings
+- User/role management
+- Final override
+- Reports and exports
+
+Accounting Lead:
+- Day-to-day accounting workspace
+- Banking review
+- Invoices
+- Payments
+- Bills
+- Expenses
+- Payroll summary workflow
+- Reconciliation
+- Monthly close
+- Normal approval authority based on thresholds
+
+Systems Reviewer:
+- Integration health
+- System diagnostics
+- Automation logs
+- Non-sensitive implementation review
+- No bank credential access
+- No payroll detail access unless explicitly granted
+
+Accountant / Tax Advisor:
+- Read/export access to approved accounting reports
+- Tax file room
+- Reconciliation packets
+- Accountant notes
+- No silent posting authority unless granted
+
+Team Member:
+- Submit expenses
+- Upload receipts
+- View own reimbursement status
+- View only assigned billing/task context
+- No ledger, bank, payroll, or approval access
+
+Integration Service:
+- Can create draft integration events
+- Can create draft accounting records only when allowed by mapping rules
+- Cannot final-post records without approval
+
+Security requirements:
+- Require authentication.
+- Require role checks on the server, not only in the UI.
+- Require MFA-ready architecture for Owner, Accounting Lead, Accountant, and Systems Reviewer.
+- Create audit logs for every create, edit, delete, approve, reject, post, reconcile, export, permission change, login, integration event, import, and settings change.
+- Store timestamps, user ID, action type, record type, record ID, before/after values when applicable, source IP/session if available, and reason/note if required.
+- Do not expose bank account numbers except masked display.
+- Do not expose payroll/compensation details to unauthorized roles.
+- Create restrictive defaults for sensitive data.
+
+Sensitive data default restrictions:
+Restrict by default:
+- Bank credentials
+- Full bank account numbers
+- Payroll details
+- Compensation
+- Owner draws/distributions
+- Tax filings
+- Accountant communications
+- Reconciliation exceptions
+- Full ledger edit history
+- High-value payment approvals
+- Sensitive vendor payments
+
+Data model:
+Create database models/tables for:
+- Users
+- Roles/permissions
+- Company settings
+- Chart accounts
+- Bank accounts
+- Bank transactions
+- Customers
+- Vendors
+- Invoices
+- Invoice line items
+- Payments
+- Bills
+- Expenses
+- Payroll summaries
+- Journal entries
+- Journal entry lines
+- Reconciliation batches
+- Monthly close
+- Integration events
+- Product/app mapping
+- Audit logs
+
+Required accounting behavior:
+- Debits and credits must balance before a journal entry can be posted.
+- Posted entries cannot be silently edited.
+- Corrections to posted entries must use reversal or adjusting entry workflows.
+- Locked periods cannot be edited by ordinary actions.
+- Locked period changes require adjusting entries and approval.
+- Invoices must move through Draft → Submitted → Approved → Sent/Posted.
+- Payments must be matched to invoices and/or bank transactions.
+- Bills must move through Draft → Submitted → Approved → Paid.
+- Expenses must require receipt or explicit missing-receipt approval.
+- Bank transactions must remain Pending Review until categorized/matched.
+- Reconciliation must compare starting balance, ending balance, cleared transactions, and variance.
+- Monthly close must have a checklist and lock period function.
+- Every financially meaningful action must create an audit log.
+
+Dashboard:
+Build a real dashboard with:
+- Cash position
+- Bank account balances
+- Pending bank review
+- AR aging
+- AP due soon
+- Overdue invoices
+- Pending approvals
+- Reconciliation health
+- Monthly close status
+- Product/app revenue
+- Client profitability
+- Integration errors
+- Payroll alerts
+- Expense review queue
+
+Banking workflow:
+1. User clicks Banking.
+2. User clicks Add Bank Account.
+3. User selects Navy Federal Credit Union.
+4. User selects connection method:
+   - Secure bank connection placeholder
+   - CSV import
+   - Manual transaction entry
+5. User enters masked account label.
+6. User saves bank account.
+7. User clicks Import Transactions.
+8. User uploads CSV or uses test import.
+9. System creates Pending Review transactions.
+10. User clicks a transaction.
+11. System shows suggested match/category/confidence.
+12. User clicks Match, Categorize, Split, Mark Transfer, Attach Receipt, or Send to Review.
+13. System updates status.
+14. User clicks Reconcile.
+15. User selects statement period.
+16. User enters starting balance and ending balance.
+17. User selects cleared transactions.
+18. System calculates variance.
+19. User clicks Submit Reconciliation for Approval.
+20. Rose or Christin approves.
+
+Invoice workflow:
+1. User clicks Invoices.
+2. User clicks New Invoice.
+3. User selects customer.
+4. User selects source app/product.
+5. User adds line items.
+6. User sets due date/payment terms.
+7. User attaches support.
+8. User clicks Preview.
+9. User clicks Save Draft.
+10. User clicks Submit for Approval.
+11. Rose or Christin clicks Approve.
+12. User clicks Send Invoice.
+13. System posts AR entry.
+14. System logs activity.
+15. Command Center receives summary only.
+
+Payment workflow:
+1. User clicks Payments.
+2. User clicks Record Payment.
+3. User selects customer/invoice.
+4. User enters amount/date/method/reference.
+5. User selects deposit account.
+6. User clicks Match to Bank Transaction.
+7. User selects matching Navy Federal deposit.
+8. User clicks Preview Accounting Impact.
+9. User clicks Post Payment if allowed.
+10. System updates invoice status.
+11. System updates AR aging.
+12. System creates audit log.
+
+Bills/AP workflow:
+1. User clicks Bills.
+2. User clicks New Bill.
+3. User selects or creates vendor.
+4. User enters bill date/due date/amount/category.
+5. User tags client/project/product if applicable.
+6. User uploads bill or receipt.
+7. User clicks Detect Duplicates.
+8. User clicks Save Draft.
+9. User clicks Submit for Approval.
+10. Rose or Christin approves/rejects/requests changes.
+11. User records payment.
+12. Payment is matched to bank transaction.
+
+Expense workflow:
+1. Team member clicks Expenses.
+2. Team member clicks Submit Expense.
+3. User enters date/vendor/amount/category/client/project/app source.
+4. User uploads receipt.
+5. User clicks Submit.
+6. Christin clicks Review Expenses.
+7. Christin opens expense.
+8. Christin clicks Approve, Reject, Request Receipt, Split Category, or Mark Non-Reimbursable.
+9. Approved expense creates accounting entry/draft according to approval settings.
+10. Command Center receives status summary only.
+
+Payroll workflow:
+1. User clicks Payroll.
+2. User clicks Import RUN ADP Summary or Add Payroll Summary.
+3. User enters payroll period/date/summary totals.
+4. System restricts employee-level details by permission.
+5. System flags unusual payroll changes.
+6. Christin clicks Submit Payroll Review.
+7. Rose or Christin approves.
+8. System creates summarized ledger entries or draft entries according to settings.
+
+Journal entry workflow:
+1. User clicks Ledger.
+2. User clicks Journal Entries.
+3. User clicks New Journal Entry.
+4. User enters date/memo/reason.
+5. User adds debit lines.
+6. User adds credit lines.
+7. System blocks unbalanced entry.
+8. User attaches support.
+9. User clicks Preview Impact.
+10. User clicks Submit for Approval.
+11. Rose or Christin approves and posts.
+12. If correction is needed, user must create reversal or adjusting entry.
+
+Reports:
+Build these reports:
+- Profit and Loss
+- Balance Sheet
+- Cash Flow
+- AR Aging
+- AP Aging
+- Trial Balance
+- General Ledger
+- Product Profitability
+- Client Profitability
+- App Revenue
+- Monthly Close
+- Reconciliation Report
+- Expense Report
+- Payroll Summary Report
+- Accountant Export Packet
+
+Monthly close:
+Build checklist:
+- Bank import complete
+- Transactions categorized
+- Statements reconciled
+- Invoices reviewed
+- Bills reviewed
+- Payroll posted/reviewed
+- Expenses approved
+- Suspense cleared
+- Reports reviewed
+- Backup/export complete
+- Rose/Christin approval complete
+
+Integration Inbox:
+Build an Integration Inbox that receives draft events from other apps.
+
+Event types:
+- Invoice Needed
+- Payment Received
+- Refund Needed
+- Expense Created
+- Service Order Sold
+- Subscription Started
+- Subscription Changed
+- Subscription Cancelled
+- Client Billing Note
+- Project Cost
+- Revenue Attribution
+- Commission Trigger
+- Payroll Alert
+- Vendor Bill Needed
+
+Required source app mappings:
+- Command Center: receives summary only
+- Client Portal / Online Services: purchases, invoice needs, billing status, service orders
+- ComplianceConnect: plan purchases, add-ons, subscriptions, service fees
+- Zoho CRM / Zoho Forms: customer/account data, deal status, intake details
+- Zoho Billing: current payment links/subscription bridge during transition
+- Navy Federal: bank transactions and balances through approved method
+- RUN ADP: payroll summaries and alerts
+- Tara OS: expenses, travel, attributed revenue, commissions/bonus support
+- Sales Intelligence OS / Guided Sales: closed deals, projected revenue, sold packages
+- Business Services Hub: service orders, fulfillment costs, client billing
+- QualifierConnect: qualifier fees, access fees, monthly fees, payouts
+- Bid Intelligence OS / Facility Intelligence / HealthCast / TrustScore: product revenue, pilot billing, subscription status, profitability
+
+Command Center finance overview:
+Build a summary feed/API that sends only safe overview data to Command Center:
+- Cash position summary
+- AR aging summary
+- AP due soon summary
+- Overdue invoices count/amount
+- Pending approvals count
+- Reconciliation health
+- Monthly close status
+- Product revenue summary
+- Client profitability summary
+- Integration errors count
+
+Command Center must not receive:
+- Full ledger
+- Full bank transaction detail
+- Bank credentials
+- Full payroll details
+- Compensation
+- Tax filings
+- Owner-only accounts
+- Sensitive vendor details unless approved
+
+Admin customization:
+Build admin screens for:
+- Custom fields
+- Custom statuses
+- Approval thresholds
+- Product/app mappings
+- Revenue account mappings
+- Cost account mappings
+- Saved views
+- Report templates
+- Recurring invoices
+- Recurring bills
+- Recurring review reminders
+- Integration mappings
+- User permissions
+- Sensitive data flags
+
+Zoho Books migration:
+Build migration tools:
+- Import chart of accounts
+- Import customers
+- Import vendors
+- Import open invoices
+- Import open bills
+- Import payment history
+- Import account balances
+- Import products/services
+- Import attachments where available
+- Validate import
+- Detect duplicates
+- Show balance differences
+- Create migration report
+- Require review before cutover
+
+Zoho Books replacement rule:
+Do not assume final cutover is complete just because imports work. LedgerOS must support a parallel-run stage where data is compared against Zoho Books before Rose approves final replacement.
+
+Production gates:
+Create a visible Production Readiness page with:
+1. Architecture gate
+2. Security gate
+3. Bank gate
+4. Accounting gate
+5. Migration gate
+6. Integration gate
+7. Command Center gate
+8. Cutover gate
+
+Rollout stages:
+Build status support for:
+1. Prototype
+2. Internal Alpha
+3. Parallel Run
+4. Controlled Cutover
+5. Full Replacement
+
+Acceptance tests:
+Include test workflows for:
+- Create invoice from app event
+- Approve invoice
+- Record payment
+- Match payment to bank transaction
+- Submit expense
+- Approve expense
+- Import Navy Federal transactions
+- Reconcile statement
+- Create balanced journal entry
+- Block unbalanced journal entry
+- Send Command Center summary
+- Lock monthly close
+- Attempt restricted locked-period edit
+- Verify audit log
+- Verify unauthorized user cannot access sensitive data
+
+Seed data:
+Create realistic but clearly labeled test data:
+- Customers
+- Vendors
+- Chart of accounts
+- Bank transactions
+- Invoices
+- Payments
+- Bills
+- Expenses
+- Payroll summaries
+- Integration events
+- Monthly close checklist
+
+Do not use seed data in a way that looks like live production data.
+
+Important restrictions:
+- Do not create fake live bank sync.
+- Do not create fake payment processing.
+- Do not create fake invoice sending.
+- Do not claim data is synced unless it is actually persisted.
+- Do not silently post records from integrations.
+- Do not expose sensitive records to unauthorized users.
+- Do not allow posted ledger records to be edited without audit/reversal logic.
+- Do not make Command Center the accounting system.
+
+Deliverables:
+1. Fully working app with persistent database.
+2. Authentication and role-based access.
+3. Core accounting modules.
+4. Real create/edit/approve/post workflows.
+5. Audit logging.
+6. Integration Inbox.
+7. Command Center summary API/feed.
+8. Zoho Books migration/import area.
+9. Navy Federal import-ready banking workflow.
+10. Monthly close workflow.
+11. Reports.
+12. Admin customization.
+13. Seed data for testing.
+14. README with setup instructions.
+15. Environment variable documentation.
+16. Testing checklist.
+17. Known limitations clearly listed.
+
+Final build behavior:
+When complete, a user should be able to log in as Rose, Christin, Carmen, Accountant, Team Member, or Integration Service and experience different permissions.
+
+Christin should be able to run daily accounting work.
+
+Rose should be able to review sensitive owner-level dashboards and approve major actions.
+
+Carmen should be able to review system/integration health without unnecessary financial detail.
+
+Team Members should only be able to submit expenses and view their own reimbursement status.
+
+Integration Service should be able to create draft events but not final-post risky accounting records.
+
+Build LedgerOS with production intent, clean code, persistent data, and real workflows.

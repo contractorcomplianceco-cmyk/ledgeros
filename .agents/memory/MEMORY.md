@@ -1,0 +1,2 @@
+- [connect-pg-simple + esbuild](connect-pg-simple-esbuild.md) — bundled server drops table.sql; sessions silently never persist. Create user_sessions via raw SQL, createTableIfMissing:false.
+- [Reversal posting date](reversal-accounting.md) — journal reversals post into the current open period (today), not the original locked date; lock-check the reversal date.
