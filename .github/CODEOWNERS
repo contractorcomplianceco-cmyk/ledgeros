@@ -1,0 +1,53 @@
+# CODEOWNERS — CCA-Contractor-Solutions
+# Managed centrally. Changes to the paths below require review from @contractorcomplianceco-cmyk.
+#
+# Intent: backend wiring, infrastructure, and API work proceeds without gating.
+# Anything that changes visual style, design, or user flow requires Rose's approval.
+
+# --- Design tokens & styling ---
+*.css                       @contractorcomplianceco-cmyk
+*.scss                      @contractorcomplianceco-cmyk
+*.sass                      @contractorcomplianceco-cmyk
+*.less                      @contractorcomplianceco-cmyk
+/styles/                    @contractorcomplianceco-cmyk
+/src/styles/                @contractorcomplianceco-cmyk
+tailwind.config.*           @contractorcomplianceco-cmyk
+postcss.config.*            @contractorcomplianceco-cmyk
+theme.json                  @contractorcomplianceco-cmyk
+/theme/                     @contractorcomplianceco-cmyk
+/design/                    @contractorcomplianceco-cmyk
+
+# --- UI components ---
+/components/                @contractorcomplianceco-cmyk
+/src/components/            @contractorcomplianceco-cmyk
+/app/components/            @contractorcomplianceco-cmyk
+/ui/                        @contractorcomplianceco-cmyk
+/src/ui/                    @contractorcomplianceco-cmyk
+
+# --- Page structure & user flow ---
+**/page.tsx                 @contractorcomplianceco-cmyk
+**/page.jsx                 @contractorcomplianceco-cmyk
+**/layout.tsx               @contractorcomplianceco-cmyk
+**/layout.jsx               @contractorcomplianceco-cmyk
+**/template.tsx             @contractorcomplianceco-cmyk
+/pages/                     @contractorcomplianceco-cmyk
+/src/pages/                 @contractorcomplianceco-cmyk
+
+# --- Static assets & brand ---
+/public/                    @contractorcomplianceco-cmyk
+/assets/                    @contractorcomplianceco-cmyk
+/src/assets/                @contractorcomplianceco-cmyk
+
+# --- Explicitly NOT gated: backend / API / infra ---
+# These are left unowned so backend wiring is not blocked.
+/pages/api/
+/src/pages/api/
+/app/api/
+/api/
+/server/
+/lib/
+/src/lib/
+/db/
+/migrations/
+/supabase/
+/prisma/
