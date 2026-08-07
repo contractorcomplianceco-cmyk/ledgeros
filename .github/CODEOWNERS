@@ -1,53 +1,83 @@
 # CODEOWNERS — CCA-Contractor-Solutions
-# Managed centrally. Changes to the paths below require review from @contractorcomplianceco-cmyk.
+# Authority control, enforced in code. Managed centrally; do not edit locally.
 #
-# Intent: backend wiring, infrastructure, and API work proceeds without gating.
-# Anything that changes visual style, design, or user flow requires Rose's approval.
+# GOVERNING RULE: every change is approval-gated by @contractorcomplianceco-cmyk.
+# Per CCA Project Governance, consequential changes require a proposed diff and
+# Rose's explicit approval before merge. Silence is not approval.
+#
+# The catch-all below owns EVERY path. The explicit entries that follow are
+# redundant by design: they exist so the gate on integration-sensitive work is
+# visible in review and cannot be silently narrowed by a future edit.
 
-# --- Design tokens & styling ---
+# --- Catch-all: nothing merges without owner approval ---
+*                           @contractorcomplianceco-cmyk
+
+# --- Integration & cross-app wiring ---
+/integrations/              @contractorcomplianceco-cmyk
+/connectors/                @contractorcomplianceco-cmyk
+/webhooks/                  @contractorcomplianceco-cmyk
+
+# --- API routes & server logic ---
+/api/                       @contractorcomplianceco-cmyk
+/app/api/                   @contractorcomplianceco-cmyk
+/pages/api/                 @contractorcomplianceco-cmyk
+/src/pages/api/             @contractorcomplianceco-cmyk
+/server/                    @contractorcomplianceco-cmyk
+/lib/                       @contractorcomplianceco-cmyk
+/src/lib/                   @contractorcomplianceco-cmyk
+/services/                  @contractorcomplianceco-cmyk
+
+# --- Database, schema & migrations ---
+/db/                        @contractorcomplianceco-cmyk
+/database/                  @contractorcomplianceco-cmyk
+/migrations/                @contractorcomplianceco-cmyk
+/supabase/                  @contractorcomplianceco-cmyk
+/prisma/                    @contractorcomplianceco-cmyk
+*.sql                       @contractorcomplianceco-cmyk
+schema.*                    @contractorcomplianceco-cmyk
+
+# --- Environment activation & configuration ---
+.env*                       @contractorcomplianceco-cmyk
+/config/                    @contractorcomplianceco-cmyk
+next.config.*               @contractorcomplianceco-cmyk
+middleware.*                @contractorcomplianceco-cmyk
+
+# --- Deployment, CI & infrastructure ---
+/.github/                   @contractorcomplianceco-cmyk
+/.github/workflows/         @contractorcomplianceco-cmyk
+vercel.json                 @contractorcomplianceco-cmyk
+Dockerfile*                 @contractorcomplianceco-cmyk
+docker-compose*             @contractorcomplianceco-cmyk
+/infra/                     @contractorcomplianceco-cmyk
+/terraform/                 @contractorcomplianceco-cmyk
+
+# --- Dependencies ---
+package.json                @contractorcomplianceco-cmyk
+package-lock.json           @contractorcomplianceco-cmyk
+pnpm-lock.yaml              @contractorcomplianceco-cmyk
+yarn.lock                   @contractorcomplianceco-cmyk
+
+# --- Auth & security ---
+/auth/                      @contractorcomplianceco-cmyk
+/src/auth/                  @contractorcomplianceco-cmyk
+/policies/                  @contractorcomplianceco-cmyk
+
+# --- Visual, design & user flow ---
 *.css                       @contractorcomplianceco-cmyk
 *.scss                      @contractorcomplianceco-cmyk
-*.sass                      @contractorcomplianceco-cmyk
-*.less                      @contractorcomplianceco-cmyk
 /styles/                    @contractorcomplianceco-cmyk
 /src/styles/                @contractorcomplianceco-cmyk
 tailwind.config.*           @contractorcomplianceco-cmyk
-postcss.config.*            @contractorcomplianceco-cmyk
-theme.json                  @contractorcomplianceco-cmyk
 /theme/                     @contractorcomplianceco-cmyk
 /design/                    @contractorcomplianceco-cmyk
-
-# --- UI components ---
 /components/                @contractorcomplianceco-cmyk
 /src/components/            @contractorcomplianceco-cmyk
-/app/components/            @contractorcomplianceco-cmyk
 /ui/                        @contractorcomplianceco-cmyk
-/src/ui/                    @contractorcomplianceco-cmyk
-
-# --- Page structure & user flow ---
 **/page.tsx                 @contractorcomplianceco-cmyk
-**/page.jsx                 @contractorcomplianceco-cmyk
 **/layout.tsx               @contractorcomplianceco-cmyk
-**/layout.jsx               @contractorcomplianceco-cmyk
-**/template.tsx             @contractorcomplianceco-cmyk
 /pages/                     @contractorcomplianceco-cmyk
-/src/pages/                 @contractorcomplianceco-cmyk
-
-# --- Static assets & brand ---
 /public/                    @contractorcomplianceco-cmyk
-/assets/                    @contractorcomplianceco-cmyk
-/src/assets/                @contractorcomplianceco-cmyk
 
-# --- Explicitly NOT gated: backend / API / infra ---
-# These are left unowned so backend wiring is not blocked.
-/pages/api/
-/src/pages/api/
-/app/api/
-/api/
-/server/
-/lib/
-/src/lib/
-/db/
-/migrations/
-/supabase/
-/prisma/
+# --- Governed authority boundary ---
+/CODEOWNERS                 @contractorcomplianceco-cmyk
+/.github/CODEOWNERS         @contractorcomplianceco-cmyk
